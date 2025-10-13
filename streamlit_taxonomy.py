@@ -134,7 +134,7 @@ def main():
 
     st.set_page_config(page_title ='Taxonomy', layout='wide')
 
-    df = pd.read_excel('C:\\Users\\werning\\IIASA\\ECE.prog - CWF\\SCIL_2024\\Taxonomy\\Taxonomy update\\taxonomy_update_v1p2.xlsx', header=[0,1,2,3])
+    df = pd.read_excel('taxonomy_update_v1p2.xlsx', header=[0,1,2,3])
 
     df.columns = ['Dimension', 'Category', 'Specific CID', 'Scale', 'Example', 'Scale ', 'Example ', 'Duration', 'Example  ', 'Low/No Confidence', 
                   'Moderate Confidence', 'High Confidence', 'Example   ', 'Low/No Confidence ', 'Moderate Confidence ', 'High Confidence ',
