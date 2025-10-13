@@ -1,0 +1,8 @@
+[client]
+showErrorDetails = "none"
+
+[theme]
+primaryColor = "#F63366"
+backgroundColor = "white"
+font='arial'
+baseFontSize = 20
