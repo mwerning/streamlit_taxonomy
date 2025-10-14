@@ -164,25 +164,22 @@ def main():
         font-weight: 500;
     }
 
-    /* Feedback form container */
-    .feedback-form-container {
-        font-size: 13px !important;
+    /* -------- Feedback Form -------- */
+    div[data-testid="stForm"] label p {
+        font-size: 15px !important;
     }
-
-    /* Make feedback form labels and inputs smaller */
-    .feedback-form-container label {
-        font-size: 12px !important;
-        font-weight: 500;
+    div[data-testid="stForm"] input,
+    div[data-testid="stForm"] textarea {
+        font-size: 15px !important;
     }
-    .feedback-form-container textarea, 
-    .feedback-form-container input {
-        font-size: 12px !important;
-    }
-
-    /* Optional: smaller submit button */
-    .feedback-form-container button[kind="primary"] {
-        font-size: 13px !important;
+    div[data-testid="stForm"] button {
+        font-size: 14px !important;
         padding: 0.4rem 1rem !important;
+    }
+
+    /* Optional: reduce line height for compact layout */
+    div[data-testid="stForm"] * {
+        line-height: 1.2 !important;
     }
     </style>
     """, unsafe_allow_html=True)
