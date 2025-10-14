@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 import st_aggrid as sta
+import requests
 
 # st.set_page_config(page_title ='Taxonomy', layout='wide')
 
@@ -19,11 +20,11 @@ custom_css = {
     #     },
     # #".ag-header-cell-text": {"font-size": "60px", "color": "red", "background-color": "red"},
     ".ag-header-cell": {
-        "font-size": "30px", "color": "black", "background-color": "white",
+        "font-size": "20px", "color": "black", "background-color": "white",
         "padding": "10px !important"
         },
     ".ag-header-group-cell": {
-        "font-size": "30px", "color": "black", "background-color": "white",
+        "font-size": "20px", "color": "black", "background-color": "white",
         "padding": "10px !important"
         },
     ".ag-header-cell-label": {
@@ -33,7 +34,7 @@ custom_css = {
         "line-height": "1.0"
     },
     ".ag-row": {
-        "font-size": "30px"
+        "font-size": "20px"
         },
     ".ag-cell": {
         "display": "flex", "align-items": "center",
@@ -130,47 +131,129 @@ custom_css = {
     },
     }
 
+def create_github_issue(title, body, email):
+    """Create a GitHub issue using REST API."""
+    github_token = st.secrets["GITHUB_TOKEN"]
+    repo = st.secrets["GITHUB_REPO"]
+    url = f"https://api.github.com/repos/{repo}/issues"
+    
+    headers = {
+        "Authorization": f"token {github_token}",
+        "Accept": "application/vnd.github+json"
+    }
+
+    issue_data = {
+        "title": title,
+        "body": f"**Feedback:**\n{body}\n\n**Submitted by:** {email or 'N/A'}"
+    }
+
+    response = requests.post(url, headers=headers, json=issue_data)
+    return response
+
 def main():
+    st.set_page_config(page_title='Taxonomy', layout='wide')
 
-    st.set_page_config(page_title ='Taxonomy', layout='wide')
+    # === Load Data ===
+    df = pd.read_excel('taxonomy_update_v1p3.xlsx', header=[0, 1, 2, 3], sheet_name='Taxonomy')
+    print(df)
 
-    df = pd.read_excel('taxonomy_update_v1p2.xlsx', header=[0,1,2,3])
+    # Flatten column names
+    df.columns = [
+        'Dimension', 'Category', 'Specific CID', 'Scale', 'Example', 'Scale ', 'Example ', 'Type of change', 'Example  ',
+        'Low/No Confidence', 'Moderate Confidence', 'High Confidence', 'Example   ',
+        'Low/No Confidence ', 'Moderate Confidence ', 'High Confidence ',
+        'Illustrative Research Needs', 'Example     ',
+        'Hazard Focused', 'Vulnerability Focused', 'Exposure Focused',
+        'Relevant Global Goal on Adaptation Targets',
+        'Critical Global Warming Level', 'Illustrative Sectoral Emissions Reductions Potential',
+        'WGI', 'WGII', 'WGI ', 'WGII '
+    ]
 
-    df.columns = ['Dimension', 'Category', 'Specific CID', 'Scale', 'Example', 'Scale ', 'Example ', 'Duration', 'Example  ', 'Low/No Confidence', 
-                  'Moderate Confidence', 'High Confidence', 'Example   ', 'Low/No Confidence ', 'Moderate Confidence ', 'High Confidence ',
-                  'Illustrative Research Needs', 'Example     ',
-                  'Hazard Focused', 'Vulnerability Focused', 'Exposure Focused', 'Relevant Global Goal on Adaptation Targets',
-                  'Critical Global Warming Level','Illustrative Sectoral Emissions Reductions Potential',
-                  'WGI', 'WGII', 'WGI ', 'WGII ']
+    # === Sidebar Filters ===
+    st.sidebar.header("🔍 Filter Options")
 
-    gridOptions = {'columnDefs': [
-                     {'headerName': "Representative Key Risk (RKR)", 
-                      'headerClass': 'rkr-header', 
-                      'wrapHeaderText': True,
-                      'autoHeaderHeight': True,
-                      'children': [{'field': "Dimension", 'filter': True, 'wrapText': True, 'autoHeight': True, 'pinned': 'left'}],
-                      'type': []}, 
-                     {'headerName': "Climatic Impact Driver (CID)",
-                      'headerClass': 'cid-header',
-                      'wrapHeaderText': True,
-                      'autoHeaderHeight': True,
-                      'children': [{'field': "Category", 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'pinned': 'left'},
-                                   {'field': "Specific CID", 'filter': True, 'headerClass': 'grey-cell','wrapText': True, 'autoHeight': True, 'pinned': 'left'}],
-                      'type': []}, 
-                      {'headerName': "Climate Impact Characteristics",
+    with st.sidebar.expander("Filters", expanded=True):
+        # Helper to build consistent dropdowns
+        def multi_filter(label, column_name):
+            options = sorted(df[column_name].dropna().unique())
+            return st.multiselect(label, options=options, default=[])
+
+        selected_dimension = multi_filter("Dimension", "Dimension")
+        selected_category = multi_filter("Category", "Category")
+        selected_specific_cid = multi_filter("Specific CID", "Specific CID")
+
+        # Handle both 'Scale' columns
+        selected_scale_1 = multi_filter("Scale (Spatial)", "Scale")
+        selected_scale_2 = multi_filter("Scale (Temporal)", "Scale ")
+
+        selected_change = multi_filter("Type of change", "Type of change")
+        selected_cgwl = multi_filter("Critical Global Warming Level", "Critical Global Warming Level")
+
+    # === Apply Filters ===
+    filtered_df = df.copy()
+
+    if selected_dimension:
+        filtered_df = filtered_df[filtered_df["Dimension"].isin(selected_dimension)]
+
+    if selected_category:
+        filtered_df = filtered_df[filtered_df["Category"].isin(selected_category)]
+
+    if selected_specific_cid:
+        filtered_df = filtered_df[filtered_df["Specific CID"].isin(selected_specific_cid)]
+
+    if selected_scale_1:
+        filtered_df = filtered_df[filtered_df["Scale"].isin(selected_scale_1)]
+
+    if selected_scale_2:
+        filtered_df = filtered_df[filtered_df["Scale "].isin(selected_scale_2)]
+
+    if selected_change:
+        filtered_df = filtered_df[filtered_df["Type of change"].isin(selected_change)]
+
+    if selected_cgwl:
+        filtered_df = filtered_df[filtered_df["Critical Global Warming Level"].isin(selected_cgwl)]
+
+    # st.sidebar.markdown(f"**Rows shown:** {len(filtered_df)} / {len(df)}")
+
+    # === Grid Options ===
+    gridOptions = {
+        'columnDefs': [
+            {
+                'headerName': "Representative Key Risk (RKR)",
+                'headerClass': 'rkr-header',
+                'wrapHeaderText': True,
+                'autoHeaderHeight': True,
+                'children': [{
+                    'field': "Dimension",
+                    'wrapText': True,
+                    'autoHeight': True,
+                    'pinned': 'left'
+                }]
+            },
+            {
+                'headerName': "Climatic Impact Driver (CID)",
+                'headerClass': 'cid-header',
+                'wrapHeaderText': True,
+                'autoHeaderHeight': True,
+                'children': [
+                    {'field': "Category", 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'pinned': 'left'},
+                    {'field': "Specific CID", 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'pinned': 'left'}
+                ]
+            },
+             {'headerName': "Climate Impact Characteristics",
                        'headerClass': 'cic-header',
                        'wrapHeaderText': True,
                       'autoHeaderHeight': True,
                       'children': [
                             {'headerName': 'Spatial',
-                              'children': [{'field': 'Scale', 'filter': True, 'wrapText': True, 'autoHeight': True},
+                              'children': [{'field': 'Scale', 'wrapText': True, 'autoHeight': True},
                                       {'field': 'Example', 'filter': True, 'wrapText': True, 'autoHeight': True}]
                             },
                             {'headerName': 'Temporal',
-                             'children': [{'field': 'Scale', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True},
+                             'children': [{'field': 'Scale', 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True},
                                       {'field': 'Example', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True}]
                             },
-                            {'field': 'Duration', 'filter': True, 'wrapText': True, 'autoHeight': True}],
+                            {'field': 'Type of change', 'wrapText': True, 'autoHeight': True}],
                       'type': []},
                        {'headerName': "Climate Impact Assessment",
                         'headerClass': 'cia-header',
@@ -248,7 +331,7 @@ def main():
                        'wrapHeaderText': True,
                        'autoHeaderHeight': True,
                       'children': [
-                            {'field': 'Critical Global Warming Level', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True},
+                            {'field': 'Critical Global Warming Level', 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True},
                             {'field': 'Illustrative Sectoral Emissions Reductions Potential', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True}],                            
                       'type': []},
                       {'headerName': "IPCC Chapter References",
@@ -267,30 +350,50 @@ def main():
                                       {'field': 'WGII ', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True}]
                             }],                            
                       'type': []},
-                     ],
-                    'rowVerticalPaddingScale': 3.0,
-                    #  'rowHeight': 50,
-                    #  'headerHeight': 50,
-                    #  'groupHeaderHeight': 50,
-                     } 
-                    #  'autoSizeStrategy': {'type': 'fitCellContents', 'skipHeader': False}}
+            # (keep all your existing column groups unchanged)
+        ],
+        'rowVerticalPaddingScale': 3.0,
+    }
 
-        # Create GridOptionsBuilder to customize grid options
-    gob = sta.GridOptionsBuilder.from_dataframe(df)
+    # === Display Grid ===
+    sta.AgGrid(
+        filtered_df,
+        gridOptions=gridOptions,
+        update_mode=sta.GridUpdateMode.MODEL_CHANGED,
+        custom_css=custom_css,
+        height=1000,
+        enable_enterprise_modules=False,
+        theme="streamlit"
+    )
 
-    # Configure column filters for all columns
-    for column in df.columns:
-        gob.configure_column(column, filter=True)
+        # === Feedback Form ===
+    st.markdown("---")
+    st.subheader("💬 Submit Feedback")
 
-    # gridOptions = gob.build()
-    # print(gridOptions)
+    st.markdown(
+        "If you found an issue, have a suggestion, or want to comment on the taxonomy, "
+        "please submit your feedback below. It will automatically create a GitHub issue "
+        "in the repository that hosts this app."
+    )
 
-    # Display the table using streamlit-aggrid
-    sta.AgGrid(df, gridOptions=gridOptions, update_mode=sta.GridUpdateMode.MODEL_CHANGED, custom_css=custom_css, height=1000)
+    with st.form("feedback_form", clear_on_submit=True):
+        feedback_title = st.text_input("**Title**")
+        feedback_text = st.text_area("**Feedback**")
+        feedback_email = st.text_input("**Your email**")
+        submitted = st.form_submit_button("📬 Submit Feedback")
+
+        if submitted:
+            if feedback_title.strip() == "" or feedback_text.strip() == "" or feedback_email.strip() == "":
+                st.error("⚠️ Please provide a title, feedback and your email address in case we have further questions regarding your feedback.")
+            else:
+                with st.spinner("Submitting feedback to GitHub..."):
+                    response = create_github_issue(feedback_title, feedback_text, feedback_email)
+                    if response.status_code == 201:
+                        st.success("✅ Feedback submitted successfully! Thank you for your contribution.")
+                    else:
+                        st.error(f"❌ Failed to submit feedback ({response.status_code}).")
+                        st.text(response.text)
+
 
 if __name__ == "__main__":
     main()
-
-#st.dataframe(df)
-#AgGrid(df)
-
