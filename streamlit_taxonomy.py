@@ -440,6 +440,8 @@ def main():
             # (keep all your existing column groups unchanged)
         ],
         'rowVerticalPaddingScale': 3.0,
+        'autoSizeStrategy': {'type': 'fitCellContents'},
+        'skipHeaderOnAutoSize': True
     }
 
     # === Display Grid ===
