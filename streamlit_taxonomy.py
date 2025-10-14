@@ -153,6 +153,36 @@ def create_github_issue(title, body, email):
 def main():
     st.set_page_config(page_title='Taxonomy', layout='wide')
 
+    st.markdown("""
+    <style>
+    /* For React Select dropdown menus */
+    .rc-virtual-list-holder {
+        font-size: 13px !important;
+    }
+
+    .rc-virtual-list-holder .rc-virtual-list-item {
+        font-size: 13px !important;
+        padding: 4px 8px !important;
+    }
+
+    /* BaseWeb Select dropdown menu */
+    .baseweb-select-menu {
+        font-size: 13px !important;
+    }
+
+    .baseweb-select-menu-item {
+        font-size: 13px !important;
+        padding: 4px 8px !important;
+    }
+
+    /* Also shrink the selected item text in the input box */
+    .baseweb-select-value {
+        font-size: 13px !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+
     # === Load Data ===
     df = pd.read_excel('taxonomy_update_v1p3.xlsx', header=[0, 1, 2, 3], sheet_name='Taxonomy')
     print(df)
@@ -172,25 +202,8 @@ def main():
     # === Sidebar Filters ===
     st.sidebar.header("🔍 Filter Options")
 
-    with st.sidebar.expander("Filters", expanded=True):
-        # Helper to build consistent dropdowns
-        def multi_filter(label, column_name):
-            options = sorted(df[column_name].dropna().unique())
-            return st.multiselect(label, options=options, default=[])
-
-        selected_dimension = multi_filter("Dimension", "Dimension")
-        selected_category = multi_filter("Category", "Category")
-        selected_specific_cid = multi_filter("Specific CID", "Specific CID")
-
-        # Handle both 'Scale' columns
-        selected_scale_1 = multi_filter("Scale (Spatial)", "Scale")
-        selected_scale_2 = multi_filter("Scale (Temporal)", "Scale ")
-
-        selected_change = multi_filter("Type of change", "Type of change")
-        selected_cgwl = multi_filter("Critical Global Warming Level", "Critical Global Warming Level")
-
-        st.markdown("""
-            <style>
+    st.markdown("""
+        <style>
             /* Sidebar adjustments */
             section[data-testid="stSidebar"] * {
                 font-size: 13px !important;   /* Default Streamlit font size is ~20px */
@@ -200,12 +213,12 @@ def main():
                 font-weight: 500;
             }
         
-                            /* Reduce font size inside input fields and dropdowns */
+            /* Reduce font size inside input fields and dropdowns */
             section[data-testid="stSidebar"] div[data-baseweb="select"] * {
                 font-size: 12px !important;
             }             
         
-                            /* Optional: reduce padding for more compact layout */
+            /* Optional: reduce padding for more compact layout */
             section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
                 min-height: 1.5em !important;
                 padding: 0.2rem 0.4rem !important;
@@ -241,18 +254,27 @@ def main():
                 margin-bottom: 0.2rem !important;
             }
 
-            /* Make button smaller */
-            div[data-testid="stForm"] button {
-                font-size: 20px !important;
-                padding: 0.3rem 0.8rem !important;
-            }
-
-            /* Adjust spacing for messages */
-            div[data-testid="stNotification"] p {
-                font-size: 12px !important;
-            }
             </style>
     """, unsafe_allow_html=True)
+
+    with st.sidebar.expander("Filters", expanded=True):
+        # Helper to build consistent dropdowns
+        def multi_filter(label, column_name):
+            options = sorted(df[column_name].dropna().unique())
+            return st.multiselect(label, options=options, default=[])
+
+        selected_dimension = multi_filter("Dimension", "Dimension")
+        selected_category = multi_filter("Category", "Category")
+        selected_specific_cid = multi_filter("Specific CID", "Specific CID")
+
+        # Handle both 'Scale' columns
+        selected_scale_1 = multi_filter("Scale (Spatial)", "Scale")
+        selected_scale_2 = multi_filter("Scale (Temporal)", "Scale ")
+
+        selected_change = multi_filter("Type of change", "Type of change")
+        selected_cgwl = multi_filter("Critical Global Warming Level", "Critical Global Warming Level")
+
+
 
     # === Apply Filters ===
     filtered_df = df.copy()
