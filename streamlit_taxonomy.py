@@ -20,21 +20,21 @@ custom_css = {
     #     },
     # #".ag-header-cell-text": {"font-size": "60px", "color": "red", "background-color": "red"},
     ".ag-header-cell": {
-        "font-size": "20px", "color": "black", "background-color": "white",
-        "padding": "10px !important"
+        "font-size": "10px", "color": "black", "background-color": "white",
+        "padding": "5px !important"
         },
     ".ag-header-group-cell": {
-        "font-size": "20px", "color": "black", "background-color": "white",
-        "padding": "10px !important"
+        "font-size": "10px", "color": "black", "background-color": "white",
+        "padding": "5px !important"
         },
     ".ag-header-cell-label": {
         "white-space": "normal !important",
         "overflow-wrap": "break-word !important",
-         "padding": "10px !important",  # Optional: adds visual spacing
+         "padding": "5px !important",  # Optional: adds visual spacing
         "line-height": "1.0"
     },
     ".ag-row": {
-        "font-size": "20px"
+        "font-size": "10px"
         },
     ".ag-cell": {
         "display": "flex", "align-items": "center",
@@ -44,35 +44,35 @@ custom_css = {
         "line-height": "1.0"
         },
     ".ag-menu": {
-        "font-size": "20px",
-        "padding": "10px"
+        "font-size": "10px",
+        "padding": "5px"
     },
     ".ag-menu-option": {
-        "font-size": "20px"
+        "font-size": "10px"
     },
     ".ag-filter": {
-        "font-size": "20px"
+        "font-size": "10px"
     },
     ".ag-input-field-input": {
-        "font-size": "20px"
+        "font-size": "10px"
     },
     ".ag-popup": {
-        "font-size": "20px",
+        "font-size": "10px",
         "line-height": "30px"
     },
     ".ag-set-filter-list": {
-        "font-size": "20px",
+        "font-size": "10px",
         "line-height": "30px"
     },
     ".ag-set-filter-item": {
-        "font-size": "20px",
+        "font-size": "10px",
         "line-height": "30px"
     },
     ".ag-checkbox-label": {
-        "font-size": "20px"
+        "font-size": "10px"
     },
     "ag-filter-body-wrapper": {
-        "font-size": "20px"
+        "font-size": "10px"
     },
     ".rkr-header": {
         "background-color": "lightblue !important",
@@ -152,6 +152,40 @@ def create_github_issue(title, body, email):
 
 def main():
     st.set_page_config(page_title='Taxonomy', layout='wide')
+
+    st.markdown("""
+    <style>
+    /* Sidebar adjustments */
+    section[data-testid="stSidebar"] * {
+        font-size: 16px !important;   /* Default Streamlit font size is ~20px */
+    }
+    section[data-testid="stSidebar"] label {
+        font-size: 15px !important;
+        font-weight: 500;
+    }
+
+    /* Feedback form container */
+    .feedback-form-container {
+        font-size: 16px !important;
+    }
+
+    /* Make feedback form labels and inputs smaller */
+    .feedback-form-container label {
+        font-size: 15px !important;
+        font-weight: 500;
+    }
+    .feedback-form-container textarea, 
+    .feedback-form-container input {
+        font-size: 15px !important;
+    }
+
+    /* Optional: smaller submit button */
+    .feedback-form-container button[kind="primary"] {
+        font-size: 14px !important;
+        padding: 0.4rem 1rem !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
     # === Load Data ===
     df = pd.read_excel('taxonomy_update_v1p3.xlsx', header=[0, 1, 2, 3], sheet_name='Taxonomy')
