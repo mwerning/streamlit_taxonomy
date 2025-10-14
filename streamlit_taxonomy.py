@@ -163,23 +163,36 @@ def main():
         font-size: 12px !important;
         font-weight: 500;
     }
+                
+    '<p style="font-size:14px; font-weight:600; margin-bottom:0.5rem;">💬 Provide Feedback</p>'
 
-    /* -------- Feedback Form -------- */
-    div[data-testid="stForm"] label p {
-        font-size: 15px !important;
-    }
-    div[data-testid="stForm"] input,
-    div[data-testid="stForm"] textarea {
-        font-size: 15px !important;
-    }
-    div[data-testid="stForm"] button {
-        font-size: 14px !important;
-        padding: 0.4rem 1rem !important;
-    }
-
-    /* Optional: reduce line height for compact layout */
+    /* Apply smaller font size to all elements inside the feedback form */
     div[data-testid="stForm"] * {
-        line-height: 1.2 !important;
+        font-size: 12px !important;
+    }
+
+    /* Compact spacing for inputs and textarea */
+    div[data-testid="stForm"] div[data-baseweb="input"] > div,
+    div[data-testid="stForm"] textarea {
+        min-height: 1.5em !important;
+        padding: 0.25rem 0.5rem !important;
+    }
+
+    /* Make labels smaller */
+    div[data-testid="stForm"] label p {
+        font-size: 12px !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    /* Make button smaller */
+    div[data-testid="stForm"] button {
+        font-size: 12px !important;
+        padding: 0.3rem 0.8rem !important;
+    }
+
+    /* Adjust spacing for messages */
+    div[data-testid="stNotification"] p {
+        font-size: 12px !important;
     }
     </style>
     """, unsafe_allow_html=True)
