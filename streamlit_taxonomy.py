@@ -20,11 +20,11 @@ custom_css = {
     #     },
     # #".ag-header-cell-text": {"font-size": "60px", "color": "red", "background-color": "red"},
     ".ag-header-cell": {
-        "font-size": "12px", "color": "black", "background-color": "white",
+        "font-size": "11px", "color": "black", "background-color": "white",
         "padding": "5px !important"
         },
     ".ag-header-group-cell": {
-        "font-size": "12px", "color": "black", "background-color": "white",
+        "font-size": "11px", "color": "black", "background-color": "white",
         "padding": "5px !important"
         },
     ".ag-header-cell-label": {
@@ -34,7 +34,7 @@ custom_css = {
         "line-height": "1.0"
     },
     ".ag-row": {
-        "font-size": "12px"
+        "font-size": "11px"
         },
     ".ag-cell": {
         "display": "flex", "align-items": "center",
@@ -44,35 +44,35 @@ custom_css = {
         "line-height": "1.0"
         },
     ".ag-menu": {
-        "font-size": "12px",
+        "font-size": "11px",
         "padding": "5px"
     },
     ".ag-menu-option": {
-        "font-size": "12px"
+        "font-size": "11px"
     },
     ".ag-filter": {
-        "font-size": "12px"
+        "font-size": "11px"
     },
     ".ag-input-field-input": {
-        "font-size": "12px"
+        "font-size": "11px"
     },
     ".ag-popup": {
-        "font-size": "12px",
-        "line-height": "30px"
+        "font-size": "11px",
+        "line-height": "15px"
     },
     ".ag-set-filter-list": {
         "font-size": "12px",
-        "line-height": "30px"
+        "line-height": "15px"
     },
     ".ag-set-filter-item": {
-        "font-size": "12px",
-        "line-height": "30px"
+        "font-size": "11px",
+        "line-height": "15px"
     },
     ".ag-checkbox-label": {
-        "font-size": "12px"
+        "font-size": "11px"
     },
     "ag-filter-body-wrapper": {
-        "font-size": "12px"
+        "font-size": "11px"
     },
     ".rkr-header": {
         "background-color": "lightblue !important",
@@ -152,6 +152,18 @@ def create_github_issue(title, body, email):
 
 def main():
     st.set_page_config(page_title='Taxonomy', layout='wide')
+
+    st.markdown("""
+        <style>
+            /* Reduce the blank space between sidebar and main content */
+            .block-container {
+                padding-left: 0.5rem !important;   /* default is ~3rem */
+                padding-right: 0.5rem !important;
+                padding-top: 1rem !important;      /* optional */
+                padding-bottom: 2rem !important;   /* optional */
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
     st.markdown("""
     <style>
@@ -451,8 +463,7 @@ def main():
         update_mode=sta.GridUpdateMode.MODEL_CHANGED,
         custom_css=custom_css,
         height=800,
-        enable_enterprise_modules=False,
-        theme="streamlit"
+        width='100%'
     )
 
         # === Feedback Form ===
