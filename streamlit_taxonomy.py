@@ -440,7 +440,7 @@ def main():
             # (keep all your existing column groups unchanged)
         ],
         'rowVerticalPaddingScale': 3.0,
-        'autoSizeStrategy': {'type': 'fitCellContents'},
+        'autoSizeStrategy': {'type': 'fitGridWidth'},
         'skipHeaderOnAutoSize': True
     }
 
@@ -450,7 +450,7 @@ def main():
         gridOptions=gridOptions,
         update_mode=sta.GridUpdateMode.MODEL_CHANGED,
         custom_css=custom_css,
-        height=1000,
+        height=800,
         enable_enterprise_modules=False,
         theme="streamlit"
     )
