@@ -153,50 +153,6 @@ def create_github_issue(title, body, email):
 def main():
     st.set_page_config(page_title='Taxonomy', layout='wide')
 
-    st.markdown("""
-    <style>
-    /* Sidebar adjustments */
-    section[data-testid="stSidebar"] * {
-        font-size: 13px !important;   /* Default Streamlit font size is ~20px */
-    }
-    section[data-testid="stSidebar"] label {
-        font-size: 12px !important;
-        font-weight: 500;
-    }
-                
-    '<p style="font-size:14px; font-weight:600; margin-bottom:0.5rem;">💬 Provide Feedback</p>'
-
-    /* Apply smaller font size to all elements inside the feedback form */
-    div[data-testid="stForm"] * {
-        font-size: 12px !important;
-    }
-
-    /* Compact spacing for inputs and textarea */
-    div[data-testid="stForm"] div[data-baseweb="input"] > div,
-    div[data-testid="stForm"] textarea {
-        min-height: 1.5em !important;
-        padding: 0.25rem 0.5rem !important;
-    }
-
-    /* Make labels smaller */
-    div[data-testid="stForm"] label p {
-        font-size: 12px !important;
-        margin-bottom: 0.2rem !important;
-    }
-
-    /* Make button smaller */
-    div[data-testid="stForm"] button {
-        font-size: 12px !important;
-        padding: 0.3rem 0.8rem !important;
-    }
-
-    /* Adjust spacing for messages */
-    div[data-testid="stNotification"] p {
-        font-size: 12px !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
     # === Load Data ===
     df = pd.read_excel('taxonomy_update_v1p3.xlsx', header=[0, 1, 2, 3], sheet_name='Taxonomy')
     print(df)
@@ -232,6 +188,71 @@ def main():
 
         selected_change = multi_filter("Type of change", "Type of change")
         selected_cgwl = multi_filter("Critical Global Warming Level", "Critical Global Warming Level")
+
+        st.markdown("""
+            <style>
+            /* Sidebar adjustments */
+            section[data-testid="stSidebar"] * {
+                font-size: 13px !important;   /* Default Streamlit font size is ~20px */
+            }
+            section[data-testid="stSidebar"] label {
+                font-size: 12px !important;
+                font-weight: 500;
+            }
+        
+                            /* Reduce font size inside input fields and dropdowns */
+            section[data-testid="stSidebar"] div[data-baseweb="select"] * {
+                font-size: 12px !important;
+            }             
+        
+                            /* Optional: reduce padding for more compact layout */
+            section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
+                min-height: 1.5em !important;
+                padding: 0.2rem 0.4rem !important;
+            }
+
+            /* Compact spacing for multi-select chips */
+            section[data-testid="stSidebar"] div[data-baseweb="tag"] {
+                font-size: 12px !important;
+                padding: 0.1rem 0.3rem !important;
+            }
+
+            /* Optional: adjust the dropdown menu items */
+            section[data-testid="stSidebar"] ul[role="listbox"] li {
+                font-size: 13px !important;
+                padding: 0.2rem 0.4rem !important;
+            }
+
+            /* Apply smaller font size to all elements inside the feedback form */
+            div[data-testid="stForm"] * {
+                font-size: 12px !important;
+            }
+
+            /* Compact spacing for inputs and textarea */
+            div[data-testid="stForm"] div[data-baseweb="input"] > div,
+            div[data-testid="stForm"] textarea {
+                min-height: 1.5em !important;
+                padding: 0.25rem 0.5rem !important;
+            }
+
+            /* Make labels smaller */
+            div[data-testid="stForm"] label p {
+                font-size: 12px !important;
+                margin-bottom: 0.2rem !important;
+            }
+
+            /* Make button smaller */
+            div[data-testid="stForm"] button {
+                font-size: 20px !important;
+                padding: 0.3rem 0.8rem !important;
+            }
+
+            /* Adjust spacing for messages */
+            div[data-testid="stNotification"] p {
+                font-size: 12px !important;
+            }
+            </style>
+    """, unsafe_allow_html=True)
 
     # === Apply Filters ===
     filtered_df = df.copy()
@@ -411,14 +432,44 @@ def main():
     )
 
         # === Feedback Form ===
-    st.markdown("---")
-    st.subheader("💬 Submit Feedback")
+    st.markdown(
+        '<p style="font-size:16px; font-weight:600; margin-bottom:0.5rem;">💬 Provide Feedback</p>',
+        unsafe_allow_html=True
+    )
 
     st.markdown(
-        "If you found an issue, have a suggestion, or want to comment on the taxonomy, "
-        "please submit your feedback below. It will automatically create a GitHub issue "
-        "in the repository that hosts this app."
+    """
+    <p style="
+        font-size:14px;
+        line-height:1.5;
+        margin-top:0.5rem;
+        margin-bottom:1.2rem;
+    ">
+        If you found an issue, have a suggestion, or want to comment on the taxonomy,
+        please submit your feedback below. It will automatically create a GitHub issue
+        in the repository that hosts this app.
+    </p>
+    """,
+    unsafe_allow_html=True
     )
+
+    st.markdown("""
+    <style>
+    /* Target the specific submit button inside the form */
+    div[data-testid="stForm"] div[data-testid="baseButton-secondaryFormSubmit"] button {
+        font-size: 12px !important;      /* adjust this number */
+        padding: 0.4rem 0.9rem !important;
+        font-weight: 500 !important;
+        border-radius: 4px !important;
+    }
+
+    /* Optional: Adjust hover effect */
+    div[data-testid="stForm"] div[data-testid="baseButton-secondaryFormSubmit"] button:hover {
+        opacity: 0.9 !important;
+        transform: scale(1.01);
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
     with st.form("feedback_form", clear_on_submit=True):
         feedback_title = st.text_input("**Title**")
