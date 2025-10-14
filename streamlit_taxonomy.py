@@ -20,11 +20,11 @@ custom_css = {
     #     },
     # #".ag-header-cell-text": {"font-size": "60px", "color": "red", "background-color": "red"},
     ".ag-header-cell": {
-        "font-size": "10px", "color": "black", "background-color": "white",
+        "font-size": "12px", "color": "black", "background-color": "white",
         "padding": "5px !important"
         },
     ".ag-header-group-cell": {
-        "font-size": "10px", "color": "black", "background-color": "white",
+        "font-size": "12px", "color": "black", "background-color": "white",
         "padding": "5px !important"
         },
     ".ag-header-cell-label": {
@@ -34,7 +34,7 @@ custom_css = {
         "line-height": "1.0"
     },
     ".ag-row": {
-        "font-size": "10px"
+        "font-size": "12px"
         },
     ".ag-cell": {
         "display": "flex", "align-items": "center",
@@ -44,35 +44,35 @@ custom_css = {
         "line-height": "1.0"
         },
     ".ag-menu": {
-        "font-size": "10px",
+        "font-size": "12px",
         "padding": "5px"
     },
     ".ag-menu-option": {
-        "font-size": "10px"
+        "font-size": "12px"
     },
     ".ag-filter": {
-        "font-size": "10px"
+        "font-size": "12px"
     },
     ".ag-input-field-input": {
-        "font-size": "10px"
+        "font-size": "12px"
     },
     ".ag-popup": {
-        "font-size": "10px",
+        "font-size": "12px",
         "line-height": "30px"
     },
     ".ag-set-filter-list": {
-        "font-size": "10px",
+        "font-size": "12px",
         "line-height": "30px"
     },
     ".ag-set-filter-item": {
-        "font-size": "10px",
+        "font-size": "12px",
         "line-height": "30px"
     },
     ".ag-checkbox-label": {
-        "font-size": "10px"
+        "font-size": "12px"
     },
     "ag-filter-body-wrapper": {
-        "font-size": "10px"
+        "font-size": "12px"
     },
     ".rkr-header": {
         "background-color": "lightblue !important",
@@ -157,31 +157,31 @@ def main():
     <style>
     /* Sidebar adjustments */
     section[data-testid="stSidebar"] * {
-        font-size: 16px !important;   /* Default Streamlit font size is ~20px */
+        font-size: 13px !important;   /* Default Streamlit font size is ~20px */
     }
     section[data-testid="stSidebar"] label {
-        font-size: 15px !important;
+        font-size: 12px !important;
         font-weight: 500;
     }
 
     /* Feedback form container */
     .feedback-form-container {
-        font-size: 16px !important;
+        font-size: 13px !important;
     }
 
     /* Make feedback form labels and inputs smaller */
     .feedback-form-container label {
-        font-size: 15px !important;
+        font-size: 12px !important;
         font-weight: 500;
     }
     .feedback-form-container textarea, 
     .feedback-form-container input {
-        font-size: 15px !important;
+        font-size: 12px !important;
     }
 
     /* Optional: smaller submit button */
     .feedback-form-container button[kind="primary"] {
-        font-size: 14px !important;
+        font-size: 13px !important;
         padding: 0.4rem 1rem !important;
     }
     </style>
