@@ -166,45 +166,89 @@ def main():
     """, unsafe_allow_html=True)
 
     st.markdown("""
-    <style>
-    /* For React Select dropdown menus */
-    .rc-virtual-list-holder {
-        font-size: 13px !important;
-    }
+<style>
 
-    .rc-virtual-list-holder .rc-virtual-list-item {
-        font-size: 13px !important;
-        padding: 4px 8px !important;
-    }
+/* Global override for dropdown options anywhere */
+div[role="option"] {
+    font-size: 12px !important;
+    line-height: 1.2em !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+}
 
-    /* BaseWeb Select dropdown menu */
-    .baseweb-select-menu {
-        font-size: 13px !important;
-    }
+/* If there is an outer container with .css-… classes that wraps the options */
+div[data-baseweb="popover"] div[role="option"] {
+    font-size: 12px !important;
+    padding: 0.2rem 0.3rem !important;
+}
 
-    .baseweb-select-menu-item {
-        font-size: 13px !important;
-        padding: 4px 8px !important;
-    }
+/* Override the input/selected area in multiselect */
+div[data-baseweb="select"] > div {
+    font-size: 12px !important;
+}
 
-    /* Also shrink the selected item text in the input box */
-    .baseweb-select-value {
-        font-size: 13px !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+/* Override the tags (chips) for selected items */
+div[data-baseweb="tag"] {
+    font-size: 11px !important;
+    margin: 1px !important;
+    padding: 1px 3px !important;
+}
+
+/* For sidebar text generally */ 
+section[data-testid="stSidebar"] * {
+    font-size: 12px !important;
+}
+
+/* Make dropdown search box smaller too */
+div[data-baseweb="popover"] input {
+    font-size: 12px !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
+
+    # st.markdown("""
+    # <style>
+    # /* For React Select dropdown menus */
+    # .rc-virtual-list-holder {
+    #     font-size: 11px !important;
+    # }
+
+    # .rc-virtual-list-holder .rc-virtual-list-item {
+    #     font-size: 11px !important;
+    #     padding: 4px 8px !important;
+    # }
+
+    # /* BaseWeb Select dropdown menu */
+    # .baseweb-select-menu {
+    #     font-size: 11px !important;
+    # }
+
+    # .baseweb-select-menu-item {
+    #     font-size: 11px !important;
+    #     padding: 4px 8px !important;
+    # }
+
+    # /* Also shrink the selected item text in the input box */
+    # .baseweb-select-value {
+    #     font-size: 11px !important;
+    # }
+    # </style>
+    # """, unsafe_allow_html=True)
 
 
     # === Load Data ===
-    df = pd.read_excel('taxonomy_update_v1p3.xlsx', header=[0, 1, 2, 3], sheet_name='Taxonomy')
+    df = pd.read_excel('taxonomy_update_v1p4.xlsx', header=[0, 1, 2, 3], sheet_name='Taxonomy')
     print(df)
 
     # Flatten column names
     df.columns = [
         'Dimension', 'Category', 'Specific CID', 'Scale', 'Example', 'Scale ', 'Example ', 'Type of change', 'Example  ',
-        'Low/No Confidence', 'Moderate Confidence', 'High Confidence', 'Example   ',
-        'Low/No Confidence ', 'Moderate Confidence ', 'High Confidence ',
-        'Illustrative Research Needs', 'Example     ',
+        'None/Low', 'Low/Moderate', 'High', 'Example   ',
+        'None/Low ', 'Low/Moderate ', 'High ',
+        'Illustrative Research Need', 'Example     ',
         'Hazard Focused', 'Vulnerability Focused', 'Exposure Focused',
         'Relevant Global Goal on Adaptation Targets',
         'Critical Global Warming Level', 'Illustrative Sectoral Emissions Reductions Potential',
@@ -216,41 +260,10 @@ def main():
 
     st.markdown("""
         <style>
-            /* Sidebar adjustments */
-            section[data-testid="stSidebar"] * {
-                font-size: 13px !important;   /* Default Streamlit font size is ~20px */
-            }
-            section[data-testid="stSidebar"] label {
-                font-size: 12px !important;
-                font-weight: 500;
-            }
-        
-            /* Reduce font size inside input fields and dropdowns */
-            section[data-testid="stSidebar"] div[data-baseweb="select"] * {
-                font-size: 12px !important;
-            }             
-        
-            /* Optional: reduce padding for more compact layout */
-            section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
-                min-height: 1.5em !important;
-                padding: 0.2rem 0.4rem !important;
-            }
-
-            /* Compact spacing for multi-select chips */
-            section[data-testid="stSidebar"] div[data-baseweb="tag"] {
-                font-size: 12px !important;
-                padding: 0.1rem 0.3rem !important;
-            }
-
-            /* Optional: adjust the dropdown menu items */
-            section[data-testid="stSidebar"] ul[role="listbox"] li {
-                font-size: 13px !important;
-                padding: 0.2rem 0.4rem !important;
-            }
 
             /* Apply smaller font size to all elements inside the feedback form */
             div[data-testid="stForm"] * {
-                font-size: 12px !important;
+                font-size: 11px !important;
             }
 
             /* Compact spacing for inputs and textarea */
@@ -262,8 +275,15 @@ def main():
 
             /* Make labels smaller */
             div[data-testid="stForm"] label p {
-                font-size: 12px !important;
+                font-size: 11px !important;
                 margin-bottom: 0.2rem !important;
+            }
+                
+            div[role="listbox"] div[role="option"] {
+                font-size: 12px !important;
+                line-height: 1.2em !important;
+                padding-top: 0.25rem !important;
+                padding-bottom: 0.25rem !important;
             }
 
             </style>
@@ -285,8 +305,6 @@ def main():
 
         selected_change = multi_filter("Type of change", "Type of change")
         selected_cgwl = multi_filter("Critical Global Warming Level", "Critical Global Warming Level")
-
-
 
     # === Apply Filters ===
     filtered_df = df.copy()
@@ -314,8 +332,57 @@ def main():
 
     # st.sidebar.markdown(f"**Rows shown:** {len(filtered_df)} / {len(df)}")
 
+    st.markdown("""
+<style>
+/* General font size inside sidebar */
+section[data-testid="stSidebar"] * {
+    font-size: 12px !important;
+}
+
+/* Adjust dropdown menu text */
+div[data-baseweb="select"] {
+    font-size: 12px !important;
+}
+
+/* Dropdown menu items */
+ul[role="listbox"] li {
+    font-size: 12px !important;
+    padding: 0.25rem 0.5rem !important;
+}
+
+/* Selected items (chips in multiselect) */
+div[data-baseweb="tag"] {
+    font-size: 11px !important;
+    padding: 0.1rem 0.3rem !important;
+}
+
+/* Input box inside dropdown */
+div[data-baseweb="input"] input {
+    font-size: 12px !important;
+}
+
+/* Label text */
+section[data-testid="stSidebar"] label p {
+    font-size: 12px !important;
+    margin-bottom: 0.1rem !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
     # === Grid Options ===
     gridOptions = {
+        'columnTypes': {
+            'small': { 
+                'width': 100,
+            },
+            'extrasmall': { 
+                'width': 75,
+            },
+            'bigger': { 
+                'width': 175,
+            }
+        },        
         'columnDefs': [
             {
                 'headerName': "Representative Key Risk (RKR)",
@@ -326,7 +393,8 @@ def main():
                     'field': "Dimension",
                     'wrapText': True,
                     'autoHeight': True,
-                    'pinned': 'left'
+                    'pinned': 'left',
+                    'type': 'extrasmall'
                 }]
             },
             {
@@ -335,8 +403,8 @@ def main():
                 'wrapHeaderText': True,
                 'autoHeaderHeight': True,
                 'children': [
-                    {'field': "Category", 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'pinned': 'left'},
-                    {'field': "Specific CID", 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'pinned': 'left'}
+                    {'field': "Category", 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'pinned': 'left', 'type': 'extrasmall'},
+                    {'field': "Specific CID", 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'pinned': 'left', 'type': 'extrasmall'}
                 ]
             },
              {'headerName': "Climate Impact Characteristics",
@@ -345,14 +413,14 @@ def main():
                       'autoHeaderHeight': True,
                       'children': [
                             {'headerName': 'Spatial',
-                              'children': [{'field': 'Scale', 'wrapText': True, 'autoHeight': True},
-                                      {'field': 'Example', 'filter': True, 'wrapText': True, 'autoHeight': True}]
+                              'children': [{'field': 'Scale', 'wrapText': True, 'autoHeight': True, 'type': 'extrasmall'},
+                                      {'field': 'Example', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'small'}]
                             },
                             {'headerName': 'Temporal',
-                             'children': [{'field': 'Scale', 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True},
-                                      {'field': 'Example', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True}]
+                             'children': [{'field': 'Scale', 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'extrasmall'},
+                                      {'field': 'Example', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'small'}]
                             },
-                            {'field': 'Type of change', 'wrapText': True, 'autoHeight': True}],
+                            {'field': 'Type of change', 'wrapText': True, 'autoHeight': True, 'type': 'extrasmall'}],
                       'type': []},
                        {'headerName': "Climate Impact Assessment",
                         'headerClass': 'cia-header',
@@ -366,15 +434,15 @@ def main():
                              'autoHeaderHeight': True,
                               'children': 
                               [
-                                  {'field': 'Example', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True},
-                                  {'field': 'IPCC AR6 assessment of Relevant Subsystems',
+                                  {'field': 'Example', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'small'},
+                                  {'field': 'CID Relevance for RKR Subsystems',
                                    'wrapText': True,
                                     'autoHeight': True,
                                         'children': 
                                             [
-                                                {'field': 'Low/No Confidence', 'filter': True, 'wrapText': True, 'autoHeight': True},
-                                                {'field': 'Moderate Confidence', 'filter': True, 'wrapText': True, 'autoHeight': True},
-                                                {'field': 'High Confidence', 'filter': True, 'wrapText': True, 'autoHeight': True}
+                                                {'field': 'None/Low', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'bigger'},
+                                                {'field': 'Low/Moderate', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'bigger'},
+                                                {'field': 'High', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'bigger'}
                                             ]
                                     }
                                 ],                                      
@@ -385,27 +453,27 @@ def main():
                              'autoHeaderHeight': True,
                              'children': 
                                 [
-                                    {'field': 'Example', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True},
-                                    {'field': 'IPCC AR6 assessment of Relevant Subsystems',
+                                    {'field': 'Example', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'small'},
+                                    {'field': 'CID Relevance for RKR Subsystems',
                                      'wrapText': True,
                                      'autoHeight': True,
                                         'children': 
                                             [
-                                                {'field': 'Low/No Confidence', 'filter': True, 'wrapText': True, 'autoHeight': True},
-                                                {'field': 'Moderate Confidence', 'filter': True, 'wrapText': True, 'autoHeight': True},
-                                                {'field': 'High Confidence', 'filter': True, 'wrapText': True, 'autoHeight': True}
+                                                {'field': 'None/Low ', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'bigger'},
+                                                {'field': 'Low/Moderate ', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'bigger'},
+                                                {'field': 'High ', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'bigger'}
                                             ]
                                     }
                                 ],
                             },
-                            {'field': 'Illustrative Research Need', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True},
+                            {'field': 'Illustrative Research Need', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'small'},
                             {'headerName': 'Modelling',
                              'headerClass': 'blue-cell',
                              'wrapHeaderText': True,
                              'autoHeaderHeight': True,
                              'children': 
                                 [
-                                    {'field': 'Example     ', 'filter': True,'wrapText': True, 'autoHeight': True},
+                                    {'field': 'Example     ', 'filter': True,'wrapText': True, 'autoHeight': True, 'type': 'small'},
                                 ],
                             },
                         ]
@@ -419,19 +487,19 @@ def main():
                              'wrapText': True,
                              'autoHeight': True,
                              'headerClass': 'yellow-cell',
-                              'children': [{'field': 'Hazard Focused', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True},
-                                      {'field': 'Vulnerability Focused', 'filter': True, 'headerClass': 'grey-cell','wrapText': True, 'autoHeight': True},
-                                      {'field': 'Exposure Focused', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True}]
+                              'children': [{'field': 'Hazard Focused', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'bigger'},
+                                      {'field': 'Vulnerability Focused', 'filter': True, 'headerClass': 'grey-cell','wrapText': True, 'autoHeight': True, 'type': 'bigger'},
+                                      {'field': 'Exposure Focused', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'bigger'}]
                             },
-                            {'field': 'Relevant Global Goal on Adaptation Targets', 'filter': True, 'wrapText': True, 'autoHeight': True}],                            
+                            {'field': 'Relevant Global Goal on Adaptation Targets', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'bigger'}],                            
                       'type': []},                                     
                       {'headerName': "Mitigation Linkages",
                        'headerClass': 'mit-header',
                        'wrapHeaderText': True,
                        'autoHeaderHeight': True,
                       'children': [
-                            {'field': 'Critical Global Warming Level', 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True},
-                            {'field': 'Illustrative Sectoral Emissions Reductions Potential', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True}],                            
+                            {'field': 'Critical Global Warming Level', 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'small'},
+                            {'field': 'Illustrative Sectoral Emissions Reductions Potential', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'small'}],                            
                       'type': []},
                       {'headerName': "IPCC Chapter References",
                        'headerClass': 'chap-header',
@@ -440,19 +508,19 @@ def main():
                       'children': [
                             {'headerName': 'AR6',
                              'headerClass': 'green-cell',
-                              'children': [{'field': 'WGI', 'filter': True, 'wrapText': True, 'autoHeight': True},
-                                      {'field': 'WGII', 'filter': True, 'wrapText': True, 'autoHeight': True}]
+                              'children': [{'field': 'WGI', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'extrasmall'},
+                                      {'field': 'WGII', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'extrasmall'}]
                             },
                             {'headerName': 'AR7',
                              'headerClass': 'green-cell',
-                              'children': [{'field': 'WGI ', 'filter': True, 'headerClass': 'grey-cell','wrapText': True, 'autoHeight': True},
-                                      {'field': 'WGII ', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True}]
+                              'children': [{'field': 'WGI ', 'filter': True, 'headerClass': 'grey-cell','wrapText': True, 'autoHeight': True, 'type': 'extrasmall'},
+                                      {'field': 'WGII ', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'extrasmall'}]
                             }],                            
                       'type': []},
             # (keep all your existing column groups unchanged)
         ],
         'rowVerticalPaddingScale': 3.0,
-        'autoSizeStrategy': {'type': 'fitGridWidth'},
+        # 'autoSizeStrategy': {'type': 'fitGridWidth'},
         'skipHeaderOnAutoSize': True
     }
 
@@ -523,6 +591,8 @@ def main():
                     else:
                         st.error(f"❌ Failed to submit feedback ({response.status_code}).")
                         st.text(response.text)
+
+    st.markdown('<style id="final-style">div[data-baseweb="popover"] div[role="option"]{font-size:12px!important;}</style>', unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
