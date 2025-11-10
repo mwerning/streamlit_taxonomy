@@ -578,14 +578,15 @@ section[data-testid="stSidebar"] label p {
         feedback_title = st.text_input("**Title**")
         feedback_text = st.text_area("**Feedback**")
         feedback_email = st.text_input("**Your email**")
+        feedback_institution = st.text_input("**Your institution**")
         submitted = st.form_submit_button("📬 Submit Feedback")
 
         if submitted:
-            if feedback_title.strip() == "" or feedback_text.strip() == "" or feedback_email.strip() == "":
+            if feedback_title.strip() == "" or feedback_text.strip() == "" or feedback_email.strip() == ""  or feedback_institution.strip() == "":
                 st.error("⚠️ Please provide a title, feedback and your email address in case we have further questions regarding your feedback.")
             else:
                 with st.spinner("Submitting feedback to GitHub..."):
-                    response = create_github_issue(feedback_title, feedback_text, feedback_email)
+                    response = create_github_issue(feedback_title, feedback_text, feedback_email, feedback_institution)
                     if response.status_code == 201:
                         st.success("✅ Feedback submitted successfully! Thank you for your contribution.")
                     else:
