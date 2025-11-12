@@ -131,7 +131,7 @@ custom_css = {
     },
     }
 
-def create_github_issue(title, body, email):
+def create_github_issue(title, body, email, institution):
     """Create a GitHub issue using REST API."""
     github_token = st.secrets["GITHUB_TOKEN"]
     repo = st.secrets["GITHUB_REPO"]
@@ -144,7 +144,7 @@ def create_github_issue(title, body, email):
 
     issue_data = {
         "title": title,
-        "body": f"**Feedback:**\n{body}\n\n**Submitted by:** {email or 'N/A'}"
+        "body": f"**Feedback:**\n{body}\n\n**Submitted by:** {email or 'N/A'}**from** {institution}"
     }
 
     response = requests.post(url, headers=headers, json=issue_data)

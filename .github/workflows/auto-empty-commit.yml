@@ -1,0 +1,26 @@
+name: Auto Empty Commit Every 5 Minutes
+
+on:
+  schedule:
+    - cron: "0 */10 * * *"  # Every 5 minutes
+  workflow_dispatch:        # Allow manual run for testing
+
+permissions:
+  contents: write  # ✅ Allows commits & pushes
+
+jobs:
+  auto-empty-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main  # ✅ Change to your default branch if not 'main'
+
+      - name: Create empty commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit --allow-empty -m "Automated empty commit: $(date -u)"
+          git push origin HEAD:main  # ✅ Explicitly push to main branch
