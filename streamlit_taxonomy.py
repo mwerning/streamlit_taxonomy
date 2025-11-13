@@ -131,7 +131,7 @@ custom_css = {
     },
     }
 
-def create_github_issue(title, body, email, institution):
+def create_github_issue(title, body, email, institution, rkr, cid):
     """Create a GitHub issue using REST API."""
     github_token = st.secrets["GITHUB_TOKEN"]
     repo = st.secrets["GITHUB_REPO"]
@@ -142,9 +142,13 @@ def create_github_issue(title, body, email, institution):
         "Accept": "application/vnd.github+json"
     }
 
+    rkr = 'not specified' if not rkr else rkr
+    cid = 'not specified' if not cid else cid
+
+
     issue_data = {
         "title": title,
-        "body": f"**Feedback:**\n{body}\n\n**Submitted by:** {email or 'N/A'}**from** {institution}"
+        "body": f"**Feedback:**\n{body}\n\n**Relates to RKR(s)** {rkr} and **CID(s)** {cid}\n\n**Submitted by** {email or 'N/A'} **from** {institution}"
     }
 
     response = requests.post(url, headers=headers, json=issue_data)
@@ -245,7 +249,7 @@ div[data-baseweb="popover"] input {
 
     # Flatten column names
     df.columns = [
-        'Dimension', 'Category', 'Specific CID', 'Scale', 'Example', 'Scale ', 'Example ', 'Type of change', 'Example  ',
+        'Dimension', 'Type', 'Category', 'Scale', 'Example', 'Scale ', 'Example ', 'Type of change', 'Example  ',
         'None/Low', 'Low/Moderate', 'High', 'Example   ',
         'None/Low ', 'Low/Moderate ', 'High ',
         'Illustrative Research Need', 'Example     ',
@@ -296,8 +300,8 @@ div[data-baseweb="popover"] input {
             return st.multiselect(label, options=options, default=[])
 
         selected_dimension = multi_filter("Dimension", "Dimension")
-        selected_category = multi_filter("Category", "Category")
-        selected_specific_cid = multi_filter("Specific CID", "Specific CID")
+        selected_category = multi_filter("Type", "Type")
+        selected_specific_cid = multi_filter("Category", "Category")
 
         # Handle both 'Scale' columns
         selected_scale_1 = multi_filter("Scale (Spatial)", "Scale")
@@ -313,10 +317,10 @@ div[data-baseweb="popover"] input {
         filtered_df = filtered_df[filtered_df["Dimension"].isin(selected_dimension)]
 
     if selected_category:
-        filtered_df = filtered_df[filtered_df["Category"].isin(selected_category)]
+        filtered_df = filtered_df[filtered_df["Type"].isin(selected_category)]
 
     if selected_specific_cid:
-        filtered_df = filtered_df[filtered_df["Specific CID"].isin(selected_specific_cid)]
+        filtered_df = filtered_df[filtered_df["Category"].isin(selected_specific_cid)]
 
     if selected_scale_1:
         filtered_df = filtered_df[filtered_df["Scale"].isin(selected_scale_1)]
@@ -403,8 +407,8 @@ section[data-testid="stSidebar"] label p {
                 'wrapHeaderText': True,
                 'autoHeaderHeight': True,
                 'children': [
-                    {'field': "Category", 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'pinned': 'left', 'type': 'extrasmall'},
-                    {'field': "Specific CID", 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'pinned': 'left', 'type': 'extrasmall'}
+                    {'field': "Type", 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'pinned': 'left', 'type': 'extrasmall'},
+                    {'field': "Category", 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'pinned': 'left', 'type': 'extrasmall'}
                 ]
             },
              {'headerName': "Climate Impact Characteristics",
@@ -579,6 +583,8 @@ section[data-testid="stSidebar"] label p {
         feedback_text = st.text_area("**Feedback**")
         feedback_email = st.text_input("**Your email**")
         feedback_institution = st.text_input("**Your institution**")
+        feedback_rkr = st.text_input("**RKR(s) (optional)**")
+        feedback_cid = st.text_input("**CID(s) (optional)**")
         submitted = st.form_submit_button("📬 Submit Feedback")
 
         if submitted:
@@ -586,7 +592,7 @@ section[data-testid="stSidebar"] label p {
                 st.error("⚠️ Please provide a title, feedback and your email address in case we have further questions regarding your feedback.")
             else:
                 with st.spinner("Submitting feedback to GitHub..."):
-                    response = create_github_issue(feedback_title, feedback_text, feedback_email, feedback_institution)
+                    response = create_github_issue(feedback_title, feedback_text, feedback_email, feedback_institution, feedback_rkr, feedback_cid)
                     if response.status_code == 201:
                         st.success("✅ Feedback submitted successfully! Thank you for your contribution.")
                     else:
