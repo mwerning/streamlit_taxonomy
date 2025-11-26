@@ -2,11 +2,8 @@ import pandas as pd
 import streamlit as st
 import st_aggrid as sta
 import requests
-
-# st.set_page_config(page_title ='Taxonomy', layout='wide')
-
-# df = pd.read_excel('C:\\Users\\werning\\IIASA\\ECE.prog - CWF\\SCIL_2024\\Taxonomy\\Taxonomy update\\taxonomy_update_v1p2.xlsx')
-
+from visual_library.hyperlink_image import hyperlink_image
+import streamlit.components.v1 as components
 
 
 def load_data(file_path):
@@ -155,7 +152,7 @@ def create_github_issue(title, body, email, institution, rkr, cid):
     return response
 
 def main():
-    st.set_page_config(page_title='Taxonomy', layout='wide')
+    st.set_page_config(page_title='Climate Impact Taxonomy', layout='wide')
 
     st.markdown("""
         <style>
@@ -170,82 +167,49 @@ def main():
     """, unsafe_allow_html=True)
 
     st.markdown("""
-<style>
+        <style>
 
-/* Global override for dropdown options anywhere */
-div[role="option"] {
-    font-size: 12px !important;
-    line-height: 1.2em !important;
-    padding-top: 2px !important;
-    padding-bottom: 2px !important;
-}
+        /* Global override for dropdown options anywhere */
+        div[role="option"] {
+            font-size: 12px !important;
+            line-height: 1.2em !important;
+            padding-top: 2px !important;
+            padding-bottom: 2px !important;
+        }
 
-/* If there is an outer container with .css-… classes that wraps the options */
-div[data-baseweb="popover"] div[role="option"] {
-    font-size: 12px !important;
-    padding: 0.2rem 0.3rem !important;
-}
+        /* If there is an outer container with .css-… classes that wraps the options */
+        div[data-baseweb="popover"] div[role="option"] {
+            font-size: 12px !important;
+            padding: 0.2rem 0.3rem !important;
+        }
 
-/* Override the input/selected area in multiselect */
-div[data-baseweb="select"] > div {
-    font-size: 12px !important;
-}
+        /* Override the input/selected area in multiselect */
+        div[data-baseweb="select"] > div {
+            font-size: 12px !important;
+        }
 
-/* Override the tags (chips) for selected items */
-div[data-baseweb="tag"] {
-    font-size: 11px !important;
-    margin: 1px !important;
-    padding: 1px 3px !important;
-}
+        /* Override the tags (chips) for selected items */
+        div[data-baseweb="tag"] {
+            font-size: 11px !important;
+            margin: 1px !important;
+            padding: 1px 3px !important;
+        }
 
-/* For sidebar text generally */ 
-section[data-testid="stSidebar"] * {
-    font-size: 12px !important;
-}
+        /* For sidebar text generally */ 
+        section[data-testid="stSidebar"] * {
+            font-size: 12px !important;
+        }
 
-/* Make dropdown search box smaller too */
-div[data-baseweb="popover"] input {
-    font-size: 12px !important;
-}
+        /* Make dropdown search box smaller too */
+        div[data-baseweb="popover"] input {
+            font-size: 12px !important;
+        }
 
-</style>
-""", unsafe_allow_html=True)
-
-
-
-    # st.markdown("""
-    # <style>
-    # /* For React Select dropdown menus */
-    # .rc-virtual-list-holder {
-    #     font-size: 11px !important;
-    # }
-
-    # .rc-virtual-list-holder .rc-virtual-list-item {
-    #     font-size: 11px !important;
-    #     padding: 4px 8px !important;
-    # }
-
-    # /* BaseWeb Select dropdown menu */
-    # .baseweb-select-menu {
-    #     font-size: 11px !important;
-    # }
-
-    # .baseweb-select-menu-item {
-    #     font-size: 11px !important;
-    #     padding: 4px 8px !important;
-    # }
-
-    # /* Also shrink the selected item text in the input box */
-    # .baseweb-select-value {
-    #     font-size: 11px !important;
-    # }
-    # </style>
-    # """, unsafe_allow_html=True)
-
+        </style>
+        """, unsafe_allow_html=True)
 
     # === Load Data ===
-    df = pd.read_excel('taxonomy_update_v1p4.xlsx', header=[0, 1, 2, 3], sheet_name='Taxonomy')
-    print(df)
+    df = pd.read_excel('climate_impact_taxonomy.xlsx', header=[0, 1, 2, 3], sheet_name='Taxonomy')
 
     # Flatten column names
     df.columns = [
@@ -310,6 +274,28 @@ div[data-baseweb="popover"] input {
         selected_change = multi_filter("Type of change", "Type of change")
         selected_cgwl = multi_filter("Critical Global Warming Level", "Critical Global Warming Level")
 
+    with st.sidebar:
+        
+        with st.columns([0.2, 0.8, 0.2])[1]:
+            st.markdown(
+                hyperlink_image(
+                    "assets/iiasa-logo.png", "https://iiasa.ac.at/"
+                ),
+                unsafe_allow_html=True,
+            )
+        st.write("")
+
+        with st.columns([0.2, 0.8, 0.2])[1]:
+            st.markdown(
+                hyperlink_image(
+                    "assets/cwf-logo.png",
+                    "https://www.climateworks.org/",
+                ),
+                unsafe_allow_html=True,
+            )
+
+        st.write("***")
+
     # === Apply Filters ===
     filtered_df = df.copy()
 
@@ -337,42 +323,88 @@ div[data-baseweb="popover"] input {
     # st.sidebar.markdown(f"**Rows shown:** {len(filtered_df)} / {len(df)}")
 
     st.markdown("""
-<style>
-/* General font size inside sidebar */
-section[data-testid="stSidebar"] * {
-    font-size: 12px !important;
-}
+        <style>
+        /* General font size inside sidebar */
+        section[data-testid="stSidebar"] * {
+            font-size: 12px !important;
+        }
 
-/* Adjust dropdown menu text */
-div[data-baseweb="select"] {
-    font-size: 12px !important;
-}
+        /* Adjust dropdown menu text */
+        div[data-baseweb="select"] {
+            font-size: 12px !important;
+        }
 
-/* Dropdown menu items */
-ul[role="listbox"] li {
-    font-size: 12px !important;
-    padding: 0.25rem 0.5rem !important;
-}
+        /* Dropdown menu items */
+        ul[role="listbox"] li {
+            font-size: 12px !important;
+            padding: 0.25rem 0.5rem !important;
+        }
 
-/* Selected items (chips in multiselect) */
-div[data-baseweb="tag"] {
-    font-size: 11px !important;
-    padding: 0.1rem 0.3rem !important;
-}
+        /* Selected items (chips in multiselect) */
+        div[data-baseweb="tag"] {
+            font-size: 11px !important;
+            padding: 0.1rem 0.3rem !important;
+        }
 
-/* Input box inside dropdown */
-div[data-baseweb="input"] input {
-    font-size: 12px !important;
-}
+        /* Input box inside dropdown */
+        div[data-baseweb="input"] input {
+            font-size: 12px !important;
+        }
 
-/* Label text */
-section[data-testid="stSidebar"] label p {
-    font-size: 12px !important;
-    margin-bottom: 0.1rem !important;
-}
-</style>
-""", unsafe_allow_html=True)
+        /* Label text */
+        section[data-testid="stSidebar"] label p {
+            font-size: 12px !important;
+            margin-bottom: 0.1rem !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
 
+    st.markdown(
+    """
+    <style>
+    div.stButton > button > div {
+        font-size: 12px !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
+    left_logo = hyperlink_image("assets/iiasa-logo.png", "https://iiasa.ac.at/")
+    right_logo = hyperlink_image("assets/cwf-logo.png", "https://www.climateworks.org/")
+
+    # === Header row with 4 columns ===
+    col1, col2, col3, col4, col5 = st.columns([2, 0.6, 0.6, 4, 1])  # Adjust ratios as needed
+
+    with col1:
+        st.markdown(
+            "**Climate Impact Taxonomy** ",
+            # "<span style='font-size:12px; color:gray'>developed by IIASA & CWF</span>",
+            unsafe_allow_html=True
+        )
+
+    # with col2:
+    #     st.markdown(left_logo, unsafe_allow_html=True)
+
+    # with col3:
+    #     st.markdown(right_logo, unsafe_allow_html=True)
+
+    with col5:
+        @st.dialog("Climate impact taxonomy - additional information", width='large')
+        def open_modal():
+            st.write("**Taxonomy description**")
+            st.write("This taxonomy was developed by the International Institute for Applied Systems Analysis (IIASA) as part of the Scoping the Climate Impact Landscape (SCIL) project, funded by ClimateWorks. It is designed to capture the breadth of climate impacts and to map them onto different risk dimensions, while pointing to adaptation and mitigation linkages. The taxonomy uses the IPCC AR6 Working Group I and II assessments as main references and applies the IPCC concepts of Climatic Impact-Drivers (CIDs) and Representative Key Risks (RKRs) as guiding taxonomy categories. The taxonomy does NOT provide a comprehensive or exhaustive analysis of all climate impacts, but is intended to help the user improve their understanding of the diverse climate impact landscape and to facilitate a more targeted exploration of research engagement opportunities")
+            st.write("**Taxonomy use**")
+            st.write("The taxonomy is targeted at users from philanthropies engaging in the climate space and any non-experts interested in learning more about the climate impact landscape. For each RKR-specific ensemble of CIDs, the taxonomy provides more specific climate impact information grouped in five broad categories: Climate Impact Characteristics; Climate Impact Assessment; Adaptation Linkages; Mitigation Linkages, IPCC AR6 & AR7 Chapter References. More details on the individual taxonomy categories can be found in the table below, including information which categories can be used to sort and filter the full set of RKR-CID combinations.")
+            st.write("**Taxonomy details**")
+            st.write("To be added")
+            st.write("**Taxonomy analysis**")
+            st.write("To be added")
+            st.caption("Click outside or press Esc to close")
+
+        if st.button("More information"):
+            open_modal()
 
     # === Grid Options ===
     gridOptions = {
@@ -395,6 +427,7 @@ section[data-testid="stSidebar"] label p {
                 'autoHeaderHeight': True,
                 'children': [{
                     'field': "Dimension",
+                    'headerTooltip': "Eight RKR categories as defined and assessed in IPCC AR6 WGII",
                     'wrapText': True,
                     'autoHeight': True,
                     'pinned': 'left',
@@ -407,24 +440,68 @@ section[data-testid="stSidebar"] label p {
                 'wrapHeaderText': True,
                 'autoHeaderHeight': True,
                 'children': [
-                    {'field': "Type", 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'pinned': 'left', 'type': 'extrasmall'},
-                    {'field': "Category", 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'pinned': 'left', 'type': 'extrasmall'}
+                    {
+                        'field': "Type", 
+                        'headerTooltip': "Seven CID types as defined and assessed in IPCC AR6 WGI",
+                        'headerClass': 'grey-cell', 
+                        'wrapText': True, 
+                        'autoHeight': True, 
+                        'pinned': 'left', 
+                        'type': 'extrasmall'},
+                    {''
+                        'field': "Category", 
+                        'headerTooltip': "Total of 35 CIDs as defined and assessed in IPCC AR6 WGI",
+                        'headerClass': 'grey-cell', 
+                        'wrapText': True, 
+                        'autoHeight': True, 
+                        'pinned': 'left', 
+                        'type': 'extrasmall'}
                 ]
             },
-             {'headerName': "Climate Impact Characteristics",
+            {'headerName': "Climate Impact Characteristics",
                        'headerClass': 'cic-header',
                        'wrapHeaderText': True,
                       'autoHeaderHeight': True,
                       'children': [
                             {'headerName': 'Spatial',
-                              'children': [{'field': 'Scale', 'wrapText': True, 'autoHeight': True, 'type': 'extrasmall'},
-                                      {'field': 'Example', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'small'}]
+                              'children': [{
+                                            'field': 'Scale', 
+                                            'headerTooltip': "Distinction between local, regional, and global scale of CID",
+                                            'wrapText': True, 
+                                            'autoHeight': True, 
+                                            'type': 'extrasmall'},
+                                        {
+                                            'field': 'Example',
+                                            'headerTooltip': "Example to contextualize the spatial scale of climate impact", 
+                                            'filter': True, 
+                                            'wrapText': True, 
+                                            'autoHeight': True, 
+                                            'type': 'small'}]
                             },
                             {'headerName': 'Temporal',
-                             'children': [{'field': 'Scale', 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'extrasmall'},
-                                      {'field': 'Example', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'small'}]
+                             'children': [{
+                                            'field': 'Scale ', 
+                                            'headerTooltip': "Distinction between seven duration levels of climate impact (minutes to hours; hours to days; days to weeks; weeks to months; months to years; years to decades; decades to centuries)", 
+                                            'headerClass': 'grey-cell', 
+                                            'wrapText': True, 
+                                            'autoHeight': True, 
+                                            'type': 'extrasmall'},
+                                        {
+                                            'field': 'Example', 
+                                            'headerTooltip': "Example to contextualize the temporal scale of climate impact", 
+                                            'filter': True, 
+                                            'headerClass': 'grey-cell', 
+                                            'wrapText': True, 
+                                            'autoHeight': True, 
+                                            'type': 'small'}]
                             },
-                            {'field': 'Type of change', 'wrapText': True, 'autoHeight': True, 'type': 'extrasmall'}],
+                            {
+                                'field': 'Type of change', 
+                                'headerTooltip': "Distinction between change in climate mean and change in climate extremes",
+                                'wrapText': True, 
+                                'autoHeight': True, 
+                                'type': 'extrasmall'
+                            }],
                       'type': []},
                        {'headerName': "Climate Impact Assessment",
                         'headerClass': 'cia-header',
@@ -438,8 +515,16 @@ section[data-testid="stSidebar"] label p {
                              'autoHeaderHeight': True,
                               'children': 
                               [
-                                  {'field': 'Example', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'small'},
+                                  {
+                                        'field': 'Example', 
+                                        'headerTooltip': "Climate impact examples specific to RKR context for natural and/or human systems; N/A is used when specific RKR-CID combinations could not be directly related to IPCC AR6 WGI Table 12.2",
+                                        'filter': True, 
+                                        'headerClass': 'grey-cell', 
+                                        'wrapText': True, 
+                                        'autoHeight': True, 
+                                        'type': 'small'},
                                   {'field': 'CID Relevance for RKR Subsystems',
+                                   'headerTooltip': "Evidence is gathered from IPCC AR6 WGI Table 12.2, with core subsystems (referred to as assets in the table) directly linked to RKRs with complementary subsystems added from relevant other sectors (max. 2 per sector); N/A is used when specific RKR-CID combinations could not be directly related to IPCC AR6 WGI Table 12.2",
                                    'wrapText': True,
                                     'autoHeight': True,
                                         'children': 
@@ -459,6 +544,7 @@ section[data-testid="stSidebar"] label p {
                                 [
                                     {'field': 'Example', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'small'},
                                     {'field': 'CID Relevance for RKR Subsystems',
+                                     'headerTooltip': "Evidence is gathered from IPCC AR6 WGI Table 12.2, with core subsystems (referred to as assets in the table) directly linked to RKRs with complementary subsystems added from relevant other sectors (max. 2 per sector); N/A is used when specific RKR-CID combinations could not be directly related to IPCC AR6 WGI Table 12.2",
                                      'wrapText': True,
                                      'autoHeight': True,
                                         'children': 
@@ -470,14 +556,26 @@ section[data-testid="stSidebar"] label p {
                                     }
                                 ],
                             },
-                            {'field': 'Illustrative Research Need', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'small'},
+                            {
+                                'field': 'Illustrative Research Need', 
+                                'headerTooltip': "Example of topics where more research is needed",
+                                'filter': True,'headerClass': 'grey-cell', 
+                                'wrapText': True, 
+                                'autoHeight': True, 
+                                'type': 'small'},
                             {'headerName': 'Modelling',
                              'headerClass': 'blue-cell',
                              'wrapHeaderText': True,
                              'autoHeaderHeight': True,
                              'children': 
                                 [
-                                    {'field': 'Example     ', 'filter': True,'wrapText': True, 'autoHeight': True, 'type': 'small'},
+                                    {
+                                        'field': 'Example     ', 
+                                        'headerTooltip': "Example of a modeling approach or framework used in the context of the specific CID-RKR combination",
+                                        'filter': True,
+                                        'wrapText': True, 
+                                        'autoHeight': True, 
+                                        'type': 'small'},
                                 ],
                             },
                         ]
@@ -491,19 +589,59 @@ section[data-testid="stSidebar"] label p {
                              'wrapText': True,
                              'autoHeight': True,
                              'headerClass': 'yellow-cell',
-                              'children': [{'field': 'Hazard Focused', 'filter': True, 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'bigger'},
-                                      {'field': 'Vulnerability Focused', 'filter': True, 'headerClass': 'grey-cell','wrapText': True, 'autoHeight': True, 'type': 'bigger'},
-                                      {'field': 'Exposure Focused', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'bigger'}]
+                              'children': [{''
+                                            'field': 'Hazard Focused', 
+                                            'headerTooltip': "Illustrative adaptation response targeting the hazard component of the IPCC 'risk propeller' (see also IPCC AR6 WGII Chapter 16)",
+                                            'filter': True, 
+                                            'headerClass': 'grey-cell', 
+                                            'wrapText': True, 
+                                            'autoHeight': True, 
+                                            'type': 'bigger'},
+                                        {
+                                            'field': 'Vulnerability Focused', 
+                                            'headerTooltip': "Illustrative adaptation response targeting the vulnerability component of the IPCC 'risk propeller' (see also IPCC AR6 WGII Chapter 16)",
+                                            'filter': True, 
+                                            'headerClass': 'grey-cell',
+                                            'wrapText': True, 
+                                            'autoHeight': True, 
+                                            'type': 'bigger'},
+                                        {
+                                            'field': 'Exposure Focused', 
+                                            'headerTooltip': "Illustrative adaptation response targeting the exposure component of the IPCC 'risk propeller' (see also IPCC AR6 WGII Chapter 16)",
+                                            'filter': True,
+                                            'headerClass': 'grey-cell', 
+                                            'wrapText': True, 
+                                            'autoHeight': True, 
+                                            'type': 'bigger'}]
                             },
-                            {'field': 'Relevant Global Goal on Adaptation Targets', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'bigger'}],                            
+                            {
+                                'field': 'Relevant Global Goal on Adaptation Targets', 
+                                'headerTooltip': "Examples of targets from the UNFCCC's Global Goal on Adaptation relevant for each RKR-CID combination",
+                                'filter': True, 
+                                'wrapText': True, 
+                                'autoHeight': True, 
+                                'type': 'bigger'}],                            
                       'type': []},                                     
                       {'headerName': "Mitigation Linkages",
                        'headerClass': 'mit-header',
                        'wrapHeaderText': True,
                        'autoHeaderHeight': True,
                       'children': [
-                            {'field': 'Critical Global Warming Level', 'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'small'},
-                            {'field': 'Illustrative Sectoral Emissions Reductions Potential', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'small'}],                            
+                            {
+                                'field': 'Critical Global Warming Level', 
+                                'headerTooltip': "Assessed global warming levels (GWLs) beyond which changes in climate impacts become critical; for cold related impacts, current GWL are used with specifier on expected changes with increasing warming",
+                                'headerClass': 'grey-cell', 
+                                'wrapText': True, 
+                                'autoHeight': True, 
+                                'type': 'small'},
+                            {
+                                'field': 'Illustrative Sectoral Emissions Reductions Potential', 
+                                'headerTooltip': "Illustrative example of how emissions reductions in sectors relevant to the CID-RKR combination could be achieved",
+                                'filter': True,
+                                'headerClass': 'grey-cell', 
+                                'wrapText': True, 
+                                'autoHeight': True, 
+                                'type': 'small'}],                            
                       'type': []},
                       {'headerName': "IPCC Chapter References",
                        'headerClass': 'chap-header',
@@ -512,13 +650,43 @@ section[data-testid="stSidebar"] label p {
                       'children': [
                             {'headerName': 'AR6',
                              'headerClass': 'green-cell',
-                              'children': [{'field': 'WGI', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'extrasmall'},
-                                      {'field': 'WGII', 'filter': True, 'wrapText': True, 'autoHeight': True, 'type': 'extrasmall'}]
+                              'children': [{
+                                                'field': 'WGI', 
+                                                'headerTooltip': "Chapter references for AR6 WGI down to chapter subsection levels that allow for exploring the assessment related to CID-RKR combination in greater depth",
+                                                'filter': True, 
+                                                'wrapText': True, 
+                                                'autoHeight': True, 
+                                                'type': 'extrasmall'
+                                                },
+                                            {
+                                                'field': 'WGII', 
+                                                'headerTooltip': "Chapter references for AR6 WGII down to chapter subsection levels that allow for exploring the assessment related to CID-RKR combination in greater depth",
+                                                'filter': True, 
+                                                'wrapText': True, 
+                                                'autoHeight': True, 
+                                                'type': 'extrasmall'
+                                                }]
                             },
                             {'headerName': 'AR7',
                              'headerClass': 'green-cell',
-                              'children': [{'field': 'WGI ', 'filter': True, 'headerClass': 'grey-cell','wrapText': True, 'autoHeight': True, 'type': 'extrasmall'},
-                                      {'field': 'WGII ', 'filter': True,'headerClass': 'grey-cell', 'wrapText': True, 'autoHeight': True, 'type': 'extrasmall'}]
+                              'children': [{''
+                                                'field': 'WGI ',
+                                                'headerTooltip': "Chapter references for AR7 WGI based on the outlined chapter structure for AR7", 
+                                                'filter': True, 
+                                                'headerClass': 'grey-cell',
+                                                'wrapText': True, 
+                                                'autoHeight': True, 
+                                                'type': 'extrasmall'
+                                                },
+                                            {
+                                                'field': 'WGII ', 
+                                                'headerTooltip': "Chapter references for AR7 WGII based on the outlined chapter structure for AR7",
+                                                'filter': True,
+                                                'headerClass': 'grey-cell', 
+                                                'wrapText': True, 
+                                                'autoHeight': True, 
+                                                'type': 'extrasmall'
+                                            }]
                             }],                            
                       'type': []},
             # (keep all your existing column groups unchanged)
