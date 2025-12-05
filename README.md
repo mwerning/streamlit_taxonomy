@@ -4,10 +4,10 @@
 
 This repository contains the code for the online version of the climate impact taxonomy developed by the International Institute for Applied Systems Analysis [(IIASA)](www.iiasa.ac.at) and ClimateWorks Foundation [(CWF)](https://www.climateworks.org/). The climate impact taxonomy file included in this repository is also published on Zenodo: [https://doi.org/10.5281/zenodo.17711315](https://doi.org/10.5281/zenodo.17711315) 
 
-<div style="display: flex; gap: 50px;">
-    <img src="assets/iiasa-logo.png" alt="IIASA logo" width="150"/>
-    <img src="assets/cwf-logo.png" alt="CWF logo" width="150"/>
-</div>
+<p>
+  <img src="assets/iiasa-logo.png" width="150" style="margin-right:50px;">
+  <img src="assets/cwf-logo.png" width="150">
+</p>
 
 ### Taxonomy description
 
