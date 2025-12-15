@@ -223,6 +223,12 @@ def main():
         'WGI', 'WGII', 'WGI ', 'WGII '
     ]
 
+    info_table_1 = pd.read_excel('assets/info_table_1.xlsx')
+    info_table_1.columns = ['Category group', 'Category component', 'Description', 'Background information']
+
+    info_table_2 = pd.read_excel('assets/info_table_2.xlsx', header=[0,1])
+    info_table_2.columns = ['Representative Key Risks (RKRs)', 'Core subsystems/assets', 'Complementary subsystems/assets']
+
     # === Sidebar Filters ===
     st.sidebar.header("🔍 Filter Options")
 
@@ -391,6 +397,62 @@ def main():
     #     st.markdown(right_logo, unsafe_allow_html=True)
 
     with col5:
+
+        infoGridOptions1 = {
+            'defaultColDef': {
+                'resizable': True,
+                'wrapText': True,
+                'autoHeight': True
+            },
+
+            'columnDefs': [
+                {'field': 'Category group', 'spanRows': True,},
+                {'field': 'Category component', 'spanRows': True,},
+                {'field': 'Description', 'spanRows': False,},
+                {'field': 'Background information', 'spanRows': False,},
+            ],
+            'enableCellSpan': True,
+        }
+
+        infoGridOptions2 = {
+            'defaultColDef': {
+                'resizable': True,
+                'wrapText': True,
+                'autoHeight': True,
+                'cellStyle':{
+                    'whiteSpace': 'pre-wrap'
+                }
+            },
+
+            'columnDefs':[
+                {
+                    'headerName': '',
+                    'wrapHeaderText': True,
+                    'children': [
+                        {'field': 'Representative Key Risks (RKRs)'}
+                    ]
+                },
+                {
+                    'headerName': 'Relevant subsystems/assets from IPCC AR6 WGI Table 12.2',
+                    'wrapHeaderText': True,
+                    'children': [
+                        {'field': 'Core subsystems/assets'},
+                        {'field': 'Complementary subsystems/assets'}
+                    ]   
+                },
+            ],
+            'enableCellSpan': True,
+
+
+        }
+
+        info_table_css = {
+            ".ag-root-wrapper": {"border": "none"},
+            ".ag-cell": {"border": "none","white-space": "pre-wrap !important"},
+            ".ag-header-cell": {"border": "none"},
+            ".ag-row": {"border": "none"},
+        }
+
         @st.dialog("Climate impact taxonomy - additional information", width='large')
         def open_modal():
             st.write("**Taxonomy description**")
@@ -398,7 +460,10 @@ def main():
             st.write("**Taxonomy use**")
             st.write("The taxonomy is targeted at users from philanthropies engaging in the climate space and any non-experts interested in learning more about the climate impact landscape. For each RKR-specific ensemble of CIDs, the taxonomy provides more specific climate impact information grouped in five broad categories: Climate Impact Characteristics; Climate Impact Assessment; Adaptation Linkages; Mitigation Linkages, IPCC AR6 & AR7 Chapter References. More details on the individual taxonomy categories can be found in the table below, including information which categories can be used to sort and filter the full set of RKR-CID combinations.")
             st.write("**Taxonomy details**")
-            st.write("To be added")
+            #st.table(data=st.dataframe(readme, hide_index=True))
+            sta.AgGrid(info_table_1, gridOptions=infoGridOptions1, custom_css=info_table_css, fit_columns_on_grid_load=True) 
+            st.write('The table below shows which core subsystems/assets were used for the IPCC AR6 Assessment of CID Relevance for Natural and Human Systems. ')
+            sta.AgGrid(info_table_2, gridOptions=infoGridOptions2, custom_css=info_table_css, fit_columns_on_grid_load=True) 
             st.write("**Taxonomy analysis**")
             st.write("To be added")
             st.caption("Click outside or press Esc to close")
